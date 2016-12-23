@@ -1,21 +1,36 @@
-use XML;
+use strict;
 
-grammar QFXParser {
-	token TOP { ^ <keyval>+ <ofx> $ }
-	token keyval { $<key>=[\w+] ':' $<val>=[\w+] \n }
-	token ofx { \<OFX\>.* }
+=begin comment
+grammar KMScript {
+
+    rule TOP        { <header> <body> }
+    rule header       { }
+    rule body     :w  { <block> }
+    rule block { \{ [ <- [\{\}\"\'\/] >* | <comment> | <string> | <block> ]* \} }
+
+    rule comment { <single_line_comment> | <multi_line_comment> }
+
+    rule single_line_comment { \/\/ \N* }
+
+    rule multi_line_comment { \/\* [ <- [*] >* | <before \*\/ > | \* ]* \*\/ }
+
+    rule quoted_string ($type) { $type [ <- [$type] >+ | [ <after \\ > $type ] ]* $type }
+	
+    rule string { <quoted_string \"> | <quoted_string \'> }
 }
+=end comment
 
-class QFXDocument {
-	has $.xml;
+grammar KMScript {
+	token TOP { [ <comment> ]+ }
+	
+    token comment { \N* \n }
+}	
+
+class KMDocument {
 	has $.parsed;
 	
 	method parsefile(Str $filename) {
-		$!parsed = QFXParser.parsefile($filename);
-		my Str $xmlstring = "$.parsed<ofx>";
-		$xmlstring.=subst(/\<INTU.BID\>/, "<INTU_BID>");
-		$xmlstring.=subst(/\<\/INTU.BID\>/, "</INTU_BID>");
-		$!xml = from-xml($xmlstring);
+		$!parsed = KMScript.parsefile($filename);
 	}
 }
 
