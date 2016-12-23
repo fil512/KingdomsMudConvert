@@ -1,7 +1,15 @@
+// comment 1
+// comment 2
+
 #pragma save_binary
 #include "/areas/Bird/Aviary/o/include/defs.h"
 
 inherit "/std/room/room";
+
+/*
+multi line
+comment
+*/
 
 object slug;
 

@@ -21,9 +21,29 @@ grammar KMScript {
 =end comment
 
 grammar KMScript {
-	token TOP { [ <comment> ]+ }
+	token TOP { [ <blob> ]+ }
 	
-    token comment { \N* \n }
+	token blob {
+		[ <comment> |
+	}
+	
+	token comment {
+		<single_line_comment> |
+		<multi_line_comment>
+	}
+	
+    token single_line_comment {
+		'//' \N* \n
+	}
+	
+	rule multi_line_comment {
+		'/*' .* '*/'
+	}
+	
+	token string { <quote> {} <quotebody($<quote>)> $<quote> }
+    token quote { '"' | "'" }
+    token quotebody($quote) { ( <escaped($quote)> | <!before $quote> . )* }
+    token escaped($quote) { '\\' ( $quote | '\\' ) }
 }	
 
 class KMDocument {

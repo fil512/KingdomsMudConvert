@@ -1,7 +1,7 @@
 use v6;
 
 use Test;
-plan 2;
+plan 4;
 
 use KM::KMDocument;
 
@@ -10,8 +10,14 @@ $doc.parsefile('t/data/eating_dinner.c');
 my $parsed = $doc.parsed;
 
 #test comments
-is @($parsed<comment>).elems, 3, 'number of comments';
+is @($parsed<blob>).elems, 5, 'number of comments';
 
 #test comment 2
-my $comment2 = @($parsed<comment>)[2];
-is $comment2, "test comment2";
+is @($parsed<blob>)[0], "// comment 1\n";
+is @($parsed<blob>)[1], "// comment 2\n";
+is @($parsed<blob>)[3], "/*\nmulti line\ncomment\n*/\n\n";
+
+
+
+
+
