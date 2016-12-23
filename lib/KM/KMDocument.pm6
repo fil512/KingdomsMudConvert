@@ -25,6 +25,7 @@ grammar KMScript {
 	
 	token blob {
 		[ <comment> |
+		  <- comment>+ ]
 	}
 	
 	token comment {
