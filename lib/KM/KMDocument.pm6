@@ -25,7 +25,8 @@ grammar KMScript {
 	
 	token blob {
 		[ <comment> |
-		  <- comment>+ ]
+		<string> |
+		  <- [\"/]>+ ]
 	}
 	
 	token comment {
@@ -41,8 +42,10 @@ grammar KMScript {
 		'/*' .* '*/'
 	}
 	
-	token string { <quote> {} <quotebody($<quote>)> $<quote> }
-    token quote { '"' | "'" }
+#	token string { <quote> {} <quotebody($<quote>)> $<quote> }
+#   token quote { '"' | "'" }
+	token string { '"' <quotebody('"')> '"' }
+
     token quotebody($quote) { ( <escaped($quote)> | <!before $quote> . )* }
     token escaped($quote) { '\\' ( $quote | '\\' ) }
 }	
