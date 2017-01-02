@@ -25,8 +25,8 @@ grammar KMScript {
 	
 	token blob {
 		[ <comment> |
-		<string> |
-		  <- [\"/]>+ ]
+		<assignment> |
+		  <line> ]
 	}
 	
 	token comment {
@@ -38,8 +38,20 @@ grammar KMScript {
 		'//' \N* \n
 	}
 	
-	rule multi_line_comment {
+	regex multi_line_comment {
 		'/*' .* '*/'
+	}
+
+	token assignment {
+		<var> '=' <string> ';' \n
+	}
+	
+	token var {
+		\w+
+	}
+	
+	token line {
+		\N* \n
 	}
 	
 #	token string { <quote> {} <quotebody($<quote>)> $<quote> }
